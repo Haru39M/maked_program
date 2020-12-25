@@ -1,0 +1,9 @@
+.\venv\Scripts\activate
+$env:FLASK_APP = "flaskr"
+$env:FLASK_ENV = "development"
+cd .\WEBAPP\flask-tutorial
+flask run
+リンク先の404ページのリンクの末尾に\helloをつけて更新
+
+schema.sqlを変えたあとはデータベースを更新するためにターミナルで
+flask init-db　をしなければならない

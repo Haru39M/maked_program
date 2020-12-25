@@ -1,0 +1,68 @@
+/*12071149 Haruto Wakayama*/
+#include <stdio.h>
+int main(void){
+    int Nmax = 0;//上限の項数
+    int N = 2;//項数
+    
+    int num0 = 0;
+    int num1 = 1;
+    int num2 = 0;
+    
+    do{
+        printf("Input num(2<=num<=20)?: \n");
+        scanf("%d",&Nmax);
+        printf("Your input number --> %d \n",Nmax);
+    }while(!((Nmax >= 2)&&(Nmax <= 20)));
+    
+    printf("F(0) = 0 \n");
+    printf("F(1) = 1 \n");
+    
+    do{
+    
+        num2 = num0 + num1;
+    
+        num0 = num1;
+        num1 = num2;
+    
+        printf("F(%d):F(%d) + F(%d) --> %d + %d = %d\n",N,N-1,N-2,num0,num1,num2);
+    
+        N += 1;
+    }while(N <= Nmax);
+    
+    return 0;
+}
+Input num(2<=num<=20)?: 
+Your input number --> -7 
+Input num(2<=num<=20)?: 
+Your input number --> 1 
+Input num(2<=num<=20)?: 
+Your input number --> 6 
+F(0) = 0 
+F(1) = 1 
+F(2):F(1) + F(0) --> 1 + 1 = 1
+F(3):F(2) + F(1) --> 1 + 2 = 2
+F(4):F(3) + F(2) --> 2 + 3 = 3
+F(5):F(4) + F(3) --> 3 + 5 = 5
+F(6):F(5) + F(4) --> 5 + 8 = 8
+Input num(2<=num<=20)?: 
+Your input number --> 100 
+Input num(2<=num<=20)?: 
+Your input number --> 0 
+Input num(2<=num<=20)?: 
+Your input number --> 15 
+F(0) = 0 
+F(1) = 1 
+F(2):F(1) + F(0) --> 1 + 1 = 1
+F(3):F(2) + F(1) --> 1 + 2 = 2
+F(4):F(3) + F(2) --> 2 + 3 = 3
+F(5):F(4) + F(3) --> 3 + 5 = 5
+F(6):F(5) + F(4) --> 5 + 8 = 8
+F(7):F(6) + F(5) --> 8 + 13 = 13
+F(8):F(7) + F(6) --> 13 + 21 = 21
+F(9):F(8) + F(7) --> 21 + 34 = 34
+F(10):F(9) + F(8) --> 34 + 55 = 55
+F(11):F(10) + F(9) --> 55 + 89 = 89
+F(12):F(11) + F(10) --> 89 + 144 = 144
+F(13):F(12) + F(11) --> 144 + 233 = 233
+F(14):F(13) + F(12) --> 233 + 377 = 377
+F(15):F(14) + F(13) --> 377 + 610 = 610

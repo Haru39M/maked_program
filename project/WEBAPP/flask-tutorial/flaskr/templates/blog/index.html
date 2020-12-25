@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Posts{% endblock %}</h1>
+  {% if g.user %}
+    <!-- 記事新規作成 -->
+    <a class="action" href="{{ url_for('blog.create') }}">
+      <button type="button" class="btn btn-outline-info">New</button>
+    </a>
+    <!-- 印刷 -->
+      <!-- フォーム -->
+      <form>
+        <!-- アイコン -->
+        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-printer" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11 2H5a1 1 0 0 0-1 1v2H3V3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2h-1V3a1 1 0 0 0-1-1zm3 4H2a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v1H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1z"/>
+          <path fill-rule="evenodd" d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zM5 8a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H5z"/>
+          <path d="M3 7.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
+        </svg>
+        <input type="button" class="btn btn-outline-info" value="このページを印刷" onClick="window.print();"/>
+      </form>
+      
+  {% endif %}
+{% endblock %}
+{% block content %}
+<!-- 画像 -->
+<!-- {%block image%}<img src="../../../Images/hatunemiku-icon.png" alt="hatunemiku" class="img-thumbnail">{%endblock%} -->
+  {% for post in posts %}
+    <div class="card">
+      <div class="card-header">
+        <h1>{{ post['title'] }}{{dates}}</h1>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">
+          <div class="about">by {{ post['username'] }} on {{post['nowtime']}}<h1></h1></div>
+        </h5>
+        <p class="card-text">
+          <p class="body">{{ post['body'] }}</p>
+        </p>
+        
+        <!-- add for metoo -->
+        <input type="button" value='挨拶' onclick="post_metoo()">
+        <p>
+          metooの数:
+          <span id="metoo">00</span>
+        </p>
+        <!-- 試験用 -->
+        <p>
+          test:
+          <span id="test">test</span>
+        </p>
+              
+              <!-- addend -->
+          <!-- <a class="action" href="{{ url_for('blog.create_metoo') }}">
+            <button type="button" class="btn btn-outline-info" name="MeToo" id="" value="{{ request.form['MeToo'] }}">MeToo!</button>
+          </a>
+          <form method="GET" action="{{ url_for('blog.create_metoo') }}">
+            <button type="submit" name="MeToo" id="posts['id']" value="{{ request.form['MeToo'] }}">Start metoo</button>
+          </form> -->
+          <!-- MeToo!機能 -->
+            <!-- {% for metoo in metoo %} -->
+              <!-- ボタン -->
+              <!-- <form method="post"> -->
+                <!-- <a class="action" href="{{ url_for('blog.create_metoo') }}"> -->
+                  <!-- <button type="button" class="btn btn-outline-info" name="MeToo" id="{{metoo['evaluated_post_id']}}" value="{{ request.form['MeToo'] }}">MeToo!</button> -->
+                <!-- </a> -->
+              <!-- </form> -->
+              <!-- バッジ -->
+              <!-- <span class="badge rounded-pill bg-info text-dark">metoo is {{metoo[0]}}</span> -->
+            <!-- {% endfor %} -->
+
+          {% if g.user['id'] == post['author_id'] %}<!-- もし著者とログインユーザーが同じなら -->
+          <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">
+            <button type="button" class="btn btn-outline-success" >Edit</button><!-- 編集ボタンを表示 -->
+          </a>
+          {% endif %}
+      </div>
+    </div>
+    {% if not loop.last %}
+      <hr><!-- ただの横線 -->
+    {% endif %}
+  {% endfor %}
+{% endblock %}
