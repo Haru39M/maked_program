@@ -178,3 +178,13 @@ def create_metoo():
         'metoo': 123
     }
     return jsonify(ResultSet=json.dumps(return_json))  # ResultSetにキーとバリューを追加
+
+@bp.route('/',methods=['GET','POST'])
+def index_add():
+    metoo = 0
+    if request.method == "POST":
+        metoo += 1
+        output = str(metoo)
+        if metoo:
+            return jsonify({'output':'Metooの数は:' + output + 'です'})
+        return jsonify({'error' : 'Missing data!'})
