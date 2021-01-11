@@ -181,10 +181,16 @@ def create_metoo():
 
 @bp.route('/',methods=['GET','POST'])
 def index_add():
+    db = get_db()
+    metoos = db.execute(
+        'SELECT metoo FROM eval'
+    ).fetchall()
+    print(metoos)
+    # metoos = int(metoos)
     metoo = 0
     if request.method == "POST":
         metoo += 1
         output = str(metoo)
         if metoo:
-            return jsonify({'output':'Metooの数は:' + output + 'です'})
+            return jsonify({'output':output})
         return jsonify({'error' : 'Missing data!'})
