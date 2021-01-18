@@ -6,7 +6,7 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
-from flaskr.metoo_db import get_metoo,get_id_list,execute_sql #add for metoo
+# from flaskr.metoo_db import get_metoo,get_id_list,execute_sql #add for metoo
 
 # add for pushbullet
 import requests
@@ -24,10 +24,9 @@ bp = Blueprint('blog', __name__)
 def index():
     db = get_db()
     posts = db.execute(
-        'SELECT p.id, title, body, created, author_id, username, nowtime'
-        # ここでuserテーブルのidとpostテーブルのauthor_idをコピーしてる？
-        ' FROM post p JOIN user u ON p.author_id = u.id'
-        ' ORDER BY created DESC'
+        'SELECT p.id, title, body, created, author_id, username, nowtime, metoo'# ここでuserテーブルのidとpostテーブルのauthor_idをコピーしてる？
+        ' FROM post p JOIN user u ON p.author_id = u.id'#投稿IDと著者IDを紐付け
+        ' ORDER BY created DESC'#作られた順にソート
     ).fetchall()  # リスト化。schema.sql内のデータをセレクトしてpostsというリストに入れていく
     return render_template('blog/index.html', posts=posts)
 
@@ -42,6 +41,7 @@ def create():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
+        metoo = int(0)#初期値
         error = None
 
         # add for pushbullet
@@ -57,9 +57,9 @@ def create():
             db = get_db()
             db.execute(
                 # postというテーブルのカラムtitle,body,author_idにデータを挿入する宣言
-                'INSERT INTO post (title, body, author_id, nowtime)'
-                ' VALUES (?, ?, ?, ?)',  # 値がいくつあるかを宣言
-                (title, body, g.user['id'], date)  # valuesにタプルとして値を代入
+                'INSERT INTO post (title, body, author_id, nowtime, metoo)'
+                ' VALUES (?, ?, ?, ?, ?)',  # 値がいくつあるかを宣言
+                (title, body, g.user['id'], date,metoo)  # valuesにタプルとして値を代入
             )
             db.commit()  # 値を確定
             # 記事を書き終わるとindex.htmlに戻っている？
@@ -70,11 +70,11 @@ def create():
 
 def get_post(id, check_author=True):
     post = get_db().execute(  # postに投稿ID、タイトル、本文、作成時刻、著者ID、著者名を格納
-        'SELECT p.id, title, body, created, author_id, username'
+        'SELECT p.id, title, body, created, author_id, username ,metoo'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' WHERE p.id = ?',
         (id,)
-    ).fetchone()
+    ).fetchone()#１件ずつデータを持ってくる
 
     if post is None:  # もしpostに何も入っていなければ404
         abort(404, "Post id {0} doesn't exist.".format(id))
@@ -89,7 +89,7 @@ def get_post(id, check_author=True):
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):  # 投稿を更新(書き換え)
-    post = get_post(id)  # 投稿IDを取得
+    post = get_post(id)  # 投稿IDの投稿を取得
 
     if request.method == 'POST':
         title = request.form['title']  # タイトルを取得
@@ -123,45 +123,6 @@ def delete(id):  # 投稿を削除。idは投稿ID
     db.commit()
     return redirect(url_for('blog.index'))
 
-
-""" @bp.route('/create_metoo', methods=('GET', 'POST'))#最期にオンにしてた
-@login_required
-def create_metoo():
-    print("a")
-    metoo = [1, 2, 3] """
-"""     if request.method == 'POST':
-            metoo = get_metoo()
-            db = get_db()#データベースに接続
-            db.execute(
-                #postというテーブルのカラムtitle,body,author_idにデータを挿入する宣言
-                'INSERT INTO eval (evaluated_post_id, evaluated_author_id, metoo)'
-                ' VALUES (?, ?, ?)',#値がいくつあるかを宣言
-                (g.post['id'],g.user['id'],metoo)#valuesにタプルとして値を代入
-            )
-            db.commit()#値を確定 """
-""" return render_template('blog/index.html', metoo=metoo) """
-
-
-""" @bp.route('/',methods = ('GET',))#methodはタプルで渡す必要あり
-@login_required
-def get_metoo_old():
-    db = get_db()
-    metoo_n = db.execute(
-        'SELECT metoo, evaluated_post_id'#合計のmetoo数,評価されたポストのIDを取り出し
-        ' FROM eval e JOIN post p ON e.evaluated_post_id = p.id'#投稿とIDを関連付ける
-        ' ORDER BY created DESC'
-    )
-    print(metoo_n)
-    return metoo_n
-
-def insert_metoo():
-    db = get_db()
-    metoo = get_metoo_old()
-    sql = 'INSERT INTO eval (evaluated_post_id, evaluated_author_id, metoo) VALUES (?, ?, ?)'+ (g.post['id'],g.user['id'],metoo)
-    db.execute(sql)
-    db.commit() """
-
-
 """ @bp.route('/metoo_post', methods=['POST'])
 def create_metoo():
     print("clicked_python")
@@ -170,27 +131,18 @@ def create_metoo():
         'metoo': result_metoo['metoo']
     }
     return jsonify(ResultSet=json.dumps(return_json))  # ResultSetにキーとバリューを追加 """
-@bp.route('/metoo_post', methods=['POST'])
-def create_metoo():
-    print("clicked_python")
-    result_metoo = get_metoo()
-    return_json = {  # return_jsonは辞書型。
-        'metoo': 123
-    }
-    return jsonify(ResultSet=json.dumps(return_json))  # ResultSetにキーとバリューを追加
 
-@bp.route('/',methods=['GET','POST'])
-def index_add():
-    db = get_db()
-    metoos = db.execute(
-        'SELECT metoo FROM eval'
-    ).fetchall()
-    print(metoos)
-    # metoos = int(metoos)
-    metoo = 0
-    if request.method == "POST":
-        metoo += 1
-        output = str(metoo)
-        if metoo:
-            return jsonify({'output':output})
-        return jsonify({'error' : 'Missing data!'})
+@bp.route('/metoo_post', methods=['POST'])#ホームで更新されるとこの関数が実行される
+def insert_metoo(id):#データベースのmetooを更新する。idは投稿ID
+    print("clicked_python")#動作チェック用
+    #データベースからmetooの数、評価された投稿のIDを取り出してmetoosというリストに入れる
+    post = get_post(id)
+    metoo = int(123) #試験用。実際にはjsから送られたjsonの値が入る
+    db = get_db()#データベースにアクセスする
+    db.execute(
+        'UPDATE post SET metoo = ?'
+        'WHERE id = ?',#評価された投稿のIDと投稿のidを紐付け
+        (metoo,id)
+    )
+    db.commit()
+    return render_template('blog/index.html',post=post)#htmlへレンダリング

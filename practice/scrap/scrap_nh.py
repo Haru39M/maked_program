@@ -18,7 +18,7 @@ while 1:
         if "src" in result[i]:#画像のurlを含んだ要素を取り出す
             img_result = result[i]
             break
-    img_url = img_result[5:-6]+str(index)+".png"#画像のurl抽出。拡張子は場合によって変える必要あり
+    img_url = img_result[5:-6]+str(index)+".jpg"#画像のurl抽出。拡張子は場合によって変える必要あり
 
     last_url_result = str(soup.find_all("a",class_="last")).split()
     for i in range(len(last_url_result)):

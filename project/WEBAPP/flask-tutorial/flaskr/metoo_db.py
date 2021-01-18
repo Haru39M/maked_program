@@ -1,7 +1,7 @@
 # ここから↓サイトのやつ
 from flaskr.db import get_db
 
-# DBからgreetingを一つ取得
+# データベースからmetooを取得
 def get_metoo():
     table = 'eval'
     id_list = get_id_list(table)

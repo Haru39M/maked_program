@@ -11,7 +11,7 @@
     <!-- add for jQuery -->
     <!-- <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
-    <script src="{{url_for('static', filename='metoo3.js')}}"></script>
+    <script src="{{url_for('static', filename='metoo.js')}}"></script>
     <!-- addend -->
 
     <!--addstart-->
@@ -81,12 +81,8 @@
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
   {% endfor %}
-  {% block content %}
-  {% endblock %}
 
-  <!-- {%block image%} -->
-  <!-- {%endblock%} -->
-
-
+  {% block content %}<!-- 投稿のブロック -->
+  {% endblock %}<!-- 投稿のブロック終わり -->
 </main>
 </html>
