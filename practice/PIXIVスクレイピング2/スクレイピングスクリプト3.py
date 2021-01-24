@@ -2,6 +2,8 @@ from pixivpy3 import *
 import os
 import time
 
+pixivID = "28407048"
+
 #folder check
 if not os.path.exists("./pixiv_images"):
     os.mkdir("./pixiv_images")
@@ -17,10 +19,11 @@ aapi.login("harutowakayama3@gmail.com","Harusamebiyori3")
 bookmark_count=input("your bookmark count number please.\n only public bookmark:")
 bookmark_count=int(bookmark_count)//30+1
 
-json_user_collect = aapi.user_bookmarks_illust("28407048", restrict='public')
+json_user_collect = aapi.user_bookmarks_illust(pixivID, restrict='public')
 while bookmark_count > 0:
     print("#"+str(bookmark_count))
     num=len(json_user_collect.illusts)
+    
     bookmark_count=bookmark_count-1
     for illust in json_user_collect.illusts[:num]:
         writer = str(illust.user.id)
