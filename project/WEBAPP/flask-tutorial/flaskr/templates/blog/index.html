@@ -34,23 +34,19 @@
           <div class="about">by {{ post['username'] }} on {{post['nowtime']}}<h1></h1></div>
         </h5>
         <p class="card-text">
-          <p class="body" id = "metoo">{{ post['body'] }}</p>
+          <p class="body">{{ post['body'] }}</p>
         </p>
 
-                          <!-- add for metoo -->
-          <!-- <a class="action" href=" url_for('blog.insert_metoo') "></a> -->
+        <!-- add for metoo -->
+        <!-- metoo関連のグループ -->
+        <div class="card-metoo">
             <!-- ボタンが押されるとmetoo.jsのpost_metoo()が実行される。そしてblog.pyでinsert_metoo()が実行されて、データベースが更新される。 -->
-            <input type="button" class= "btn btn-outline-info" value='metoo!' onclick="post_metoo()">
+            <input type="button" class= "btn btn-outline-info" value='metoo!' id="{{post['id']}}" onclick="post_metoo(this)"><!-- idは投稿のid。jsで取得する。 -->
             <!-- metooの表示。insert_metoo()から送られたjson文字列からjsで表示することで非同期で更新。idはjsが実行された時にどこを書き換えるかを示すため。リロードされた時にindex()が読み込まれて初めてデータベースの値が読み込まれる -->
-            <p>
               metooの数:
-              <span id="metoo">{{ post['metoo'] }}</span>
-            </p>
-          </a>
-              <!-- バッジ -->
-              <!-- <span class="badge rounded-pill bg-info text-dark">metoo is 00</span> -->
+              <span id="metoo_value{{post['id']}}" class="badge rounded-pill bg-info text-light">{{ post['metoo'] }}</span>
 
-
+          </div>
 
           {% if g.user['id'] == post['author_id'] %}<!-- もし著者とログインユーザーが同じなら -->
           <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">

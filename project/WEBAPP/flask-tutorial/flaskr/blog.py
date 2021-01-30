@@ -16,6 +16,8 @@ from AddAPI.pushbullet import push_message
 # add for get time(jst)
 from datetime import timedelta, timezone, datetime
 # addend
+#add for ajax
+import sys
 
 bp = Blueprint('blog', __name__)
 
@@ -133,16 +135,21 @@ def create_metoo():
     return jsonify(ResultSet=json.dumps(return_json))  # ResultSetにキーとバリューを追加 """
 
 @bp.route('/metoo_post', methods=['POST'])#ホームで更新されるとこの関数が実行される
-def insert_metoo(id):#データベースのmetooを更新する。idは投稿ID
+def insert_metoo():#データベースのmetooを更新する。idは投稿ID
+    post_id = request.json['id']
+    metoo = int(request.json['metoo'])+1#１増やす
+    print("result is {}".format(post_id))
     print("clicked_python")#動作チェック用
+    print("metoo is {}".format(metoo))
     #データベースからmetooの数、評価された投稿のIDを取り出してmetoosというリストに入れる
-    post = get_post(id)
-    metoo = int(123) #試験用。実際にはjsから送られたjsonの値が入る
+    post = get_post(post_id)
+    # metoo = int(123) #試験用。実際にはjsから送られたjsonの値が入る
     db = get_db()#データベースにアクセスする
     db.execute(
         'UPDATE post SET metoo = ?'
         'WHERE id = ?',#評価された投稿のIDと投稿のidを紐付け
-        (metoo,id)
+        (metoo,post_id)
     )
     db.commit()
-    return render_template('blog/index.html',post=post)#htmlへレンダリング
+    # return render_template('blog/index.html',post=post)#htmlへレンダリング
+    return redirect(url_for('blog.index'))
