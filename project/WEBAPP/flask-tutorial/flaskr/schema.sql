@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS post;
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,/*ユーザーIDをプライマリキーとして宣言*/
   username TEXT UNIQUE NOT NULL,
+  token TEXT DEFAULT NULL,/*pushbulletのトークン*/
   password TEXT NOT NULL
 );
 
@@ -15,7 +16,8 @@ CREATE TABLE post (
   title TEXT NOT NULL,
   body TEXT NOT NULL,
   nowtime TEXT,
-  metoo,INTEGER NOT NULL DEFAULT 0,
+  metoo INTEGER NOT NULL DEFAULT 0,
+  task_color INTEGER NOT NULL DEFAULT 0,
   FOREIGN KEY (author_id) REFERENCES user (id)/*著者IDを外部キーとすることでユーザーIDを紐付け。*/
   
 );

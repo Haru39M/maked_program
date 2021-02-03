@@ -1,5 +1,6 @@
 body {
   padding-top: 5rem;
+  color:#010D00;
 }
 .starter-template {
   padding: 3rem 1.5rem;
@@ -9,5 +10,19 @@ body {
   color: red;/*add*/
 }
 .card-header{
-  color: rgb(78, 131, 131);
+  /* color: rgb(78, 131, 131); */
+  color: #1B260F;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.task-color1{
+  color:red;
+}
+.task-color2{
+  color: yellow;
+}
+.task-color3{
+  color: aqua;
+}
+.task-color4{
+  color: aquamarine;
 }

@@ -21,6 +21,7 @@ def save():
     while 1:
         result = str(soup.find_all("section",id = "image-container")).split()#soupからdivタグのid="i3"のやつを探して、空白で区切ってリストresultに格納
         
+        #url生成
         for i in range(len(result)):#リストresultから画像のurlを含んだ要素を探す
             if "src" in result[i]:#最初に見つかったものを取り出す
                 img_result = result[i].replace('src="',"").replace('"',"").split("/")[:-1]#画像のurl(画像番号と拡張子除く)
@@ -28,7 +29,7 @@ def save():
                 img_kakuchoushi = "." + result[i].replace('src="',"").replace('"',"").split("/")[-1].split(".")[-1]#拡張子
                 break
         img_url = img_result+str(index)+img_kakuchoushi#画像のurl生成。
-        # print(img_url)
+        print("画像のURL:{}".format(img_url))
 
         last_url_result = str(soup.find_all("a",class_="last")).split()
         for i in range(len(last_url_result)):
@@ -67,7 +68,7 @@ def save():
                 make_pdf(title,img_kakuchoushi)
             break#while文を抜ける
         else:#あれば続行
-            print(str(index)+"個目の画像をダウンロードしました")
+            print(str(index)+"/"+str(last_index)+"個目の画像をダウンロードしました")
             index += 1
 
 def make_pdf(folder_name,kakuchoushi):#読み込む画像フォルダを入力。pdfのファイル名はフォルダ名と同じになる。
@@ -81,8 +82,8 @@ def make_pdf(folder_name,kakuchoushi):#読み込む画像フォルダを入力�
 
 if __name__ == '__main__':
     if ismakepdfonly == False:
-        save()
-    if ismakepdfonly == True:
         folder_name = input("フォルダ名を入力してください")
-        kakuchoushi = input("拡張子を入力してください")
+        kakuchoushi = input("拡張子を入力してください(例: .jpg)")
         make_pdf(folder_name,kakuchoushi)
+    else:
+        save()

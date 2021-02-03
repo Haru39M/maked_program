@@ -26,7 +26,7 @@ bp = Blueprint('blog', __name__)
 def index():
     db = get_db()
     posts = db.execute(
-        'SELECT p.id, title, body, created, author_id, username, nowtime, metoo'# ここでuserテーブルのidとpostテーブルのauthor_idをコピーしてる？
+        'SELECT p.id, title, body, created, author_id, username, nowtime, metoo,task_color'# ここでuserテーブルのidとpostテーブルのauthor_idをコピーしてる？
         ' FROM post p JOIN user u ON p.author_id = u.id'#投稿IDと著者IDを紐付け
         ' ORDER BY created DESC'#作られた順にソート
     ).fetchall()  # リスト化。schema.sql内のデータをセレクトしてpostsというリストに入れていく
@@ -40,6 +40,9 @@ def create():
     jst = timezone(timedelta(hours=9), 'JST')
     date = datetime.now(jst).strftime("%Y/%m/%d (%A) - %H : %M")
     # add end
+    #add for taskcolor
+    set_task_color()
+    #add end
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -47,7 +50,8 @@ def create():
         error = None
 
         # add for pushbullet
-        push_message(title, body)
+        token = get_token()
+        push_message(title, body,token)
         # addend
 
         if not title:
@@ -125,25 +129,23 @@ def delete(id):  # 投稿を削除。idは投稿ID
     db.commit()
     return redirect(url_for('blog.index'))
 
-""" @bp.route('/metoo_post', methods=['POST'])
-def create_metoo():
-    print("clicked_python")
-    result_metoo = get_metoo()
-    return_json = {  # return_jsonは辞書型。
-        'metoo': result_metoo['metoo']
-    }
-    return jsonify(ResultSet=json.dumps(return_json))  # ResultSetにキーとバリューを追加 """
-
 @bp.route('/metoo_post', methods=['POST'])#ホームで更新されるとこの関数が実行される
 def insert_metoo():#データベースのmetooを更新する。idは投稿ID
     post_id = request.json['id']
     metoo = int(request.json['metoo'])+1#１増やす
-    print("result is {}".format(post_id))
-    print("clicked_python")#動作チェック用
-    print("metoo is {}".format(metoo))
+    return_json = {'id':post_id,'metoo':metoo}#json形式で返すためにこの形にする
+    #動作チェック用
+    # print("result is {}".format(post_id))
+    # print("clicked_python")
+    # print("metoo is {}".format(metoo))
+
+    # add for pushbullet
+    post = get_post(post_id,check_author=False)#別ユーザーにお知らせするためにcheck_authorはFalse
+    token = get_token()
+    push_message(post['title'], post['body'],token)#タイトルと本文を送信
+    # addend
+    
     #データベースからmetooの数、評価された投稿のIDを取り出してmetoosというリストに入れる
-    post = get_post(post_id)
-    # metoo = int(123) #試験用。実際にはjsから送られたjsonの値が入る
     db = get_db()#データベースにアクセスする
     db.execute(
         'UPDATE post SET metoo = ?'
@@ -151,5 +153,46 @@ def insert_metoo():#データベースのmetooを更新する。idは投稿ID
         (metoo,post_id)
     )
     db.commit()
-    # return render_template('blog/index.html',post=post)#htmlへレンダリング
-    return redirect(url_for('blog.index'))
+    return jsonify(ResultSet = json.dumps(return_json))#jsonをjsに返す
+
+@bp.route('/set_token',methods=('GET','POST'))
+def set_token_fun():
+    # print("worked set_token")
+    token_default = get_token()
+    if request.method == 'POST':
+        token = None
+        token = request.form['token']
+        # print(token)
+        if token is not None:
+            # print("token inputted!")
+            db = get_db()
+            db.execute(
+                'UPDATE user SET token = ?'
+                'WHERE id = ?',
+                (token, g.user['id'])
+            )
+            db.commit()  # 値を確定
+            return redirect(url_for('blog.index'))
+    return render_template('blog/set_token.html',token_default = token_default)#set_token.htmlへレンダリング
+
+def get_token():
+    db = get_db()
+    token = None
+    token = db.execute(
+        'SELECT token'
+        ' FROM user'
+        ' WHERE user.id = ?',
+        (g.user['id'],)
+    ).fetchone()
+    # print(g.user['id'])
+    return token[0]
+
+def set_task_color():
+    db = get_db()
+    color = db.execute(
+        'UPDATE post SET task_color = ?'
+        'WHERE id = post.id',
+        (1,)
+    )
+    db.commit()
+    

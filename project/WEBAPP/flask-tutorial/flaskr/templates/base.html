@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>Shikutter</title>
+    <!-- <title>Shikutter</title> -->
     <!--addend-->
 
     <!-- add for jQuery -->
@@ -21,7 +21,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <!--addend-->
   </head>
-<title>{% block title %}{% endblock %} - Flaskr</title>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='starter-template.css') }}"><!--changed "style.css"-->
 
   <!--addstart-->
@@ -58,9 +58,9 @@
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">触れん</a>
       </li>
       <li class="nav-item dropdown"><!--ドロップダウンメニュー-->
-        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">設定</a>
         <div class="dropdown-menu" aria-labelledby="dropdown01">
-          <a class="dropdown-item" href="#">モチ</a>
+          <a class="dropdown-item" href="{{ url_for('blog.set_token_fun') }}">Pushbulletトークンの登録</a>
           <a class="dropdown-item" href="#">モチモチ</a>
           <a class="dropdown-item" href="#">モチモチモチ</a>
           <a class="button" href="#">links</a>
@@ -76,7 +76,13 @@
 </nav>
 <main role="main" class="container">
   <header>
-    {% block header %}{% endblock %}
+    {% block header %}
+    <title>
+      {% block title %}
+      メモノート
+      {% endblock %}
+    </title>
+    {% endblock %}
   </header>
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>

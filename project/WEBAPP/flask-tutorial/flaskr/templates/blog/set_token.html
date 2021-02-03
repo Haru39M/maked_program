@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}トークンの登録{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h1>testpage</h1>
+pushbulletのトークンを登録すれば、スマホやPCに入れたアプリからタスクを通知してくれます。<br>
+トークンを発行して、貴方のアカウントに登録してください！
+<form method="post">
+  <label for="token">Token Code:</label>
+  <input name="token" id="token" value="{{token_default}}" placeholder="Input your token"><!-- requiredは入力必須を表す -->
+  <input type="submit" value="Save">
+</form>
+<!-- value="{{ request.form['token'] }}" -->
+{% endblock %}
