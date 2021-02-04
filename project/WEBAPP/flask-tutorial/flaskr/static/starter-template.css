@@ -15,14 +15,14 @@ body {
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 .task-color1{
-  color:red;
+  background-color:#D43761;
 }
 .task-color2{
-  color: yellow;
+  background-color: #EBAC48;
 }
 .task-color3{
-  color: aqua;
+  background-color: #5A4FF6;
 }
 .task-color4{
-  color: aquamarine;
+  background-color: #99D437;
 }

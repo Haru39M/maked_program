@@ -40,9 +40,6 @@ def create():
     jst = timezone(timedelta(hours=9), 'JST')
     date = datetime.now(jst).strftime("%Y/%m/%d (%A) - %H : %M")
     # add end
-    #add for taskcolor
-    set_task_color()
-    #add end
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -187,12 +184,19 @@ def get_token():
     # print(g.user['id'])
     return token[0]
 
+@bp.route('/set_color', methods=('GET', 'POST'))
 def set_task_color():
+    print("worked set_task_color")
+    post_id = request.json['id'][-1]
+    color = request.json['color']
+    print(post_id)
+    print(color)
     db = get_db()
     color = db.execute(
         'UPDATE post SET task_color = ?'
-        'WHERE id = post.id',
-        (1,)
+        'WHERE id = ?',
+        (color,post_id)
     )
     db.commit()
+    return redirect(url_for('blog.index'))
     
