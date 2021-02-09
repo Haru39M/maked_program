@@ -3,7 +3,6 @@ function post_color(ele,color) {//pythonへ送る情報の前処理。htmlから
     // window.alert("color is "+color);
     var id_value = ele.id;//投稿のidをとってくる
     // window.alert("id_value is "+id_value);
-
     var result = JSON.stringify({"id":id_value,"color":color}); // eleのプロパティとしてidを取得し、id_valueというjsonにする
     var url = '/set_color';
     // window.alert(url);

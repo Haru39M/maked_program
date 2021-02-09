@@ -11,8 +11,9 @@ body {
 }
 .card-header{
   /* color: rgb(78, 131, 131); */
-  color: #1B260F;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: #aaaaaa;
+  /* font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; */
+  font-family: "游ゴシック体", YuGothic, "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック", "Yu Gothic", sans-serif;
 }
 .task-color1{
   background-color:#D43761;

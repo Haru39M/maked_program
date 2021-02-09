@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}タスク{% endblock %}</h1>
+  <h1>{% block title %}タスク管理アプリ{% endblock %}</h1>
   {% if g.user %}
     <!-- 記事新規作成 -->
     <a class="action" href="{{ url_for('blog.create') }}">
@@ -51,17 +51,18 @@
           <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">
             <button type="button" class="btn btn-outline-success" >Edit</button><!-- 編集ボタンを表示 -->
           </a>
+                    <!-- タスクカラーのボタン -->
+                    <div class="btn-group">
+                      <!--色の番号(1,2,3,4)をpost_color()の第二引数として与える。color+投稿idでユニークなidとして、python側で投稿idのみ抜き出す。-->
+                      <button type="button" class="btn btn-secondary" id="color{{post['id']}}" onclick="post_color(this,0)">　</button><!--その他-->
+                      <button type="button" class="btn btn-danger" id="color{{post['id']}}" onclick="post_color(this,1)">　</button><!--緊急かつ重要-->
+                      <button type="button" class="btn btn-warning" id="color{{post['id']}}" onclick="post_color(this,2)">　</button><!--重要-->
+                      <button type="button" class="btn btn-primary" id="color{{post['id']}}" onclick="post_color(this,3)">　</button><!--緊急-->
+                      <button type="button" class="btn btn-success" id="color{{post['id']}}" onclick="post_color(this,4)">　</button><!--時間があれば-->
+                    <!-- <span id="color-disp-color{{post['id']}}">■■TASKCOLOR{{post['task_color']}}postid={{post['id']}}</span> -->
+                  </div>
           {% endif %}
-          <!-- タスクカラーのボタン -->
-          <div>
-              <!--色の番号(1,2,3,4)をpost_color()の第二引数として与える。color+投稿idでユニークなidとして、python側で投稿idのみ抜き出す。-->
-              <button type="button" class="btn btn-secondary" id="color{{post['id']}}" onclick="post_color(this,0)">　</button><!--その他-->
-              <button type="button" class="btn btn-danger" id="color{{post['id']}}" onclick="post_color(this,1)">　</button><!--緊急かつ重要-->
-              <button type="button" class="btn btn-warning" id="color{{post['id']}}" onclick="post_color(this,2)">　</button><!--重要-->
-              <button type="button" class="btn btn-primary" id="color{{post['id']}}" onclick="post_color(this,3)">　</button><!--緊急-->
-              <button type="button" class="btn btn-success" id="color{{post['id']}}" onclick="post_color(this,4)">　</button><!--時間があれば-->
-            <!-- <span id="color-disp-color{{post['id']}}">■■TASKCOLOR{{post['task_color']}}postid={{post['id']}}</span> -->
-          </div>
+
       </div>
     </div>
     {% if not loop.last %}

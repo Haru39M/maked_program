@@ -187,10 +187,10 @@ def get_token():
 @bp.route('/set_color', methods=('GET', 'POST'))
 def set_task_color():
     print("worked set_task_color")
-    post_id = request.json['id'][-1]
+    post_id = request.json['id'][5:]
     color = request.json['color']
-    print(post_id)
-    print(color)
+    print("post_id is {}".format(post_id))
+    print("color number is {}".format(color))
     db = get_db()
     color = db.execute(
         'UPDATE post SET task_color = ?'
